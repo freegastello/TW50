@@ -17,17 +17,21 @@
 		<th>Action</th>
 	</tr>
 	<c:forEach var="user" items="${usersList}">
-		<tr>
-			<td>${user.id}</td>
-			<td>${user.name}</td>
-			<td>${user.login}</td>
-			<td>${user.password}</td>
-			<td>${user.role.get(0).role}</td>
-			<td>
-				<a href="/edit/${user.id}">edit</a>
-				<a href="/delete/${user.id}">delete</a>
-			</td>
-		</tr>
+		<c:forEach var="rol" items="${user.role}" varStatus="theCount">
+			<tr>
+				<td>${user.id}</td>
+				<td>${user.name}</td>
+				<td>${user.login}</td>
+				<td>${user.password}</td>
+				<td>
+					${user.role.get(theCount.index).role}
+				</td>
+				<td>
+					<a href="/edit/${user.id}">edit</a>
+					<a href="/delete/${user.id}">delete</a>
+				</td>
+			</tr>
+		</c:forEach>
 	</c:forEach>
 </table>
 

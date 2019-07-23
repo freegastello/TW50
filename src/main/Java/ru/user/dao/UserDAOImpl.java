@@ -17,11 +17,11 @@ public class UserDAOImpl implements UserDAO {
 	@Autowired
 	@Override
 	public List<User> allUsers() {
-		return entityManager.createQuery("from User").getResultList();
+		return entityManager.createQuery("from User ORDER BY user_id ASC").getResultList();
 	}
 
 	@Override
-	public User getById(int id) {
+	public User getById(Long id) {
 		return entityManager.find(User.class, id);
 	}
 

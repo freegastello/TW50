@@ -1,5 +1,4 @@
 package ru.user.controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.user.model.Role;
 import ru.user.model.User;
@@ -35,50 +34,49 @@ public class PersonController {
 	}
 
 	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-	public ModelAndView editUser(@PathVariable("id") int id) {
+	public ModelAndView editUser(@PathVariable("id") Long id) {
 		User user = userService.getById(id);
+		List<Role> roles = userService.allRoles();
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("editPage");
 		modelAndView.addObject("user", user);
+		modelAndView.addObject("roleList", roles);
 		return modelAndView;
 	}
 
+
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
 	public ModelAndView editUser(@ModelAttribute("user") User user) {
+		reSetUser(user);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("redirect:/");
 		userService.edit(user);
 		return modelAndView;
 	}
 
-//	@RequestMapping(value = "/add", method = RequestMethod.GET)
-//	public ModelAndView addUser() {
-//		ModelAndView modelAndView = new ModelAndView();
-//		modelAndView.setViewName("editPage");
-//		return modelAndView;
-//	}
-
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public ModelAndView addUser() {
 		List<Role> roles = userService.allRoles();
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("editPage");
+		modelAndView.setViewName("addPage");
 		modelAndView.addObject("roleList", roles);
 		return modelAndView;
 	}
 
 
+	private User reSetUser(User user) {
+		for (int i = 0; i < user.getRole().size(); i++) {
+			String roletext = user.getRole().get(i).getRole();
+			if ("ADMIN".equals(roletext)) {
+				user.getRole().get(i).setId(Long.valueOf(1));
+			} else if ("USER".equals(roletext)) {
+				user.getRole().get(i).setId(Long.valueOf(2));
+			}
+		}
+		return user;
+	}
 
-//	@RequestMapping(value = "/add", method = RequestMethod.POST)
-//	public ModelAndView addUser(@ModelAttribute("user") User user) {
-//		ModelAndView modelAndView = new ModelAndView();
-//		modelAndView.setViewName("redirect:/");
-//		userService.add(user);
-//		return modelAndView;
-//	}
-
-//	@RequestMapping(value = "/add", method = RequestMethod.POST)
-//	public ModelAndView addUser(@ModelAttribute("user") User user) {
+//	private ModelAndView saveAddUser(User user) {
 //		ModelAndView modelAndView = new ModelAndView();
 //		modelAndView.setViewName("redirect:/");
 //		userService.add(user);
@@ -86,24 +84,16 @@ public class PersonController {
 //	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public ModelAndView addUser(@RequestParam("name") String name,
-		@RequestParam("login") String login,
-		@RequestParam("password") String password,
-//		@RequestParam("role") List<Role> role) {
-		@RequestParam("role") String role) {
+	public ModelAndView addUser(@ModelAttribute("user") User user) {
+		reSetUser(user);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("redirect:/");
-		List<Role> rol = null;
-		rol.set(0, new Role("role"));
-		User user = new User(name, login, password, rol);
 		userService.add(user);
 		return modelAndView;
 	}
 
-
-
 	@RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-	public ModelAndView deleteUser(@PathVariable("id") int id) {
+	public ModelAndView deleteUser(@PathVariable("id") Long id) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("redirect:/");
 		User user = userService.getById(id);

@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	@Override
-	public User getById(int id) {
+	public User getById(Long id) {
 		return userDAO.getById(id);
 	}
 

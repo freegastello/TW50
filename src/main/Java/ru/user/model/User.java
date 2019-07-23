@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,17 +20,20 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "user_id")
-	private int id;
+	private Long id;
 	private String name;
 	private String login;
 	private String password;
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles",
 			joinColumns = @JoinColumn(name="user_id"),
 			inverseJoinColumns = @JoinColumn(name="role_id")
 	)
-	private List<Role> role;
-
+	private List<Role> role = new ArrayList<>();
+//All,
+//PERSIST, REFRESH
+//No DETACH, ALL
 	public User() {}
 
 	public User(String name, String login, String password, List<Role> role) {
@@ -39,7 +43,7 @@ public class User {
 		this.role = role;
 	}
 
-	public User(int id, String name, String login, String password, List<Role> role) {
+	public User(Long id, String name, String login, String password, List<Role> role) {
 		this.id = id;
 		this.name = name;
 		this.login = login;
@@ -47,11 +51,11 @@ public class User {
 		this.role = role;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
