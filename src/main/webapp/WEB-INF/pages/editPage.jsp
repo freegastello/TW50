@@ -5,7 +5,8 @@
 	<title>Edit</title>
 </head>
 <body>
-	<c:url value="/edit" var="var"/>
+<a href="/logout">logout</a>
+	<c:url value="/admin/edit" var="var"/>
 <form action="${var}" method="POST">
 	<input type="hidden" name="id" value="${user.id}">
 	<label for="name">Name</label>
@@ -14,26 +15,45 @@
 		<input type="text" name="login" id="login" value="${user.login}"><br/>
 	<label for="password">Password</label>
 		<input type="text" name="password" id="password" value="${user.password}"><br/>
-
-<%--	<label for="role">Role</label>--%>
-<%--	<input type="text" name="role" id="role" value="${user.role.get(0).role}"><br/>--%>
+		<br/>
+		<c:if test="${user.enabled == true}">
+			<input type="checkbox" name="enabled" checked>
+		</c:if>
+		<c:if test="${user.enabled == false}">
+			<input type="checkbox" name="enabled">
+		</c:if>
+		<br/>
 
 
 	<select name="role" multiple>
+	<c:forEach var="rol" items="${user.role}" varStatus="theCount">
 		<c:forEach var="roles" items="${roleList}">
-			<c:if test="${roles.role == user.role.get(0).role}">
+			<c:if test="${roles.role == user.role.get(theCount.index).role}">
 				<option selected value="${roles.role}">${roles.role}</option>
 			</c:if>
-			<c:if test="${roles.role != user.role.get(0).role}">
-				<option value="${roles.role}">${roles.role}</option>
-			</c:if>
 		</c:forEach>
+	</c:forEach>
+
 	</select>
 	<br><br>
 		<input type="submit" value="Edit user">
 </form>
 </body>
 </html>
+
+
+
+
+<%--<c:forEach var="roles" items="${roleList}" varStatus="theCount">--%>
+<%--	<c:if test="${roles.role == user.role.get(0).role}">--%>
+<%--		<option selected value="${roles.role}">${roles.role}</option>--%>
+<%--	</c:if>--%>
+<%--	<c:if test="${roles.role != user.role.get(0).role}">--%>
+<%--		<option value="${roles.role}">${roles.role}</option>--%>
+<%--	</c:if>--%>
+<%--</c:forEach>--%>
+
+
 
 
 

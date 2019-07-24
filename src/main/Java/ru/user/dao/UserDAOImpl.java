@@ -1,4 +1,5 @@
 package ru.user.dao;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.user.model.Role;
 import ru.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public void add(User user) {
+		user.setEnabled(true);
+		user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 		entityManager.persist(user);
 	}
 

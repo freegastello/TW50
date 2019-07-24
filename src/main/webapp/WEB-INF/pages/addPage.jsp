@@ -6,7 +6,8 @@
 </head>
 
 <body>
-<form action="/add" method="POST">
+<a href="/logout">logout</a>
+<form action="/admin/add" method="POST">
 	<label for="name">Name</label>
 	<input type="text" name="name" id="name" value="${user.name}"><br/>
 	<label for="login">Login</label>
@@ -16,7 +17,6 @@
 
 	<select name="role" multiple>
 		<c:forEach var="roles" items="${roleList}">
-<%--			<option value="${roles.role}">${roles.role}</option>--%>
 			<option value="${roles.role}">${roles.role}</option>
 		</c:forEach>
 	</select>

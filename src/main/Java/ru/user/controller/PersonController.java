@@ -17,14 +17,19 @@ public class PersonController {
 		this.userService = userService;
 	}
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = {"/", "/login"}, method = RequestMethod.GET)
 	public ModelAndView start() {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:/users");
+		modelAndView.setViewName("login");
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/other", method = RequestMethod.GET)
+	public ModelAndView startOther() {
+		return new ModelAndView("/other");
+	}
+
+	@RequestMapping(value = "/admin/users", method = RequestMethod.GET)
 	public ModelAndView allUsers() {
 		List<User> users = userService.allUsers();
 		ModelAndView modelAndView = new ModelAndView();
@@ -33,7 +38,7 @@ public class PersonController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/admin/edit/{id}", method = RequestMethod.GET)
 	public ModelAndView editUser(@PathVariable("id") Long id) {
 		User user = userService.getById(id);
 		List<Role> roles = userService.allRoles();
@@ -45,16 +50,16 @@ public class PersonController {
 	}
 
 
-	@RequestMapping(value = "/edit", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/edit", method = RequestMethod.POST)
 	public ModelAndView editUser(@ModelAttribute("user") User user) {
 		reSetUser(user);
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:/");
+		modelAndView.setViewName("redirect:/admin/users");
 		userService.edit(user);
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "/add", method = RequestMethod.GET)
+	@RequestMapping(value = "/admin/add", method = RequestMethod.GET)
 	public ModelAndView addUser() {
 		List<Role> roles = userService.allRoles();
 		ModelAndView modelAndView = new ModelAndView();
@@ -76,26 +81,19 @@ public class PersonController {
 		return user;
 	}
 
-//	private ModelAndView saveAddUser(User user) {
-//		ModelAndView modelAndView = new ModelAndView();
-//		modelAndView.setViewName("redirect:/");
-//		userService.add(user);
-//		return modelAndView;
-//	}
-
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/add", method = RequestMethod.POST)
 	public ModelAndView addUser(@ModelAttribute("user") User user) {
 		reSetUser(user);
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:/");
+		modelAndView.setViewName("redirect:/admin/users");
 		userService.add(user);
 		return modelAndView;
 	}
 
-	@RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
+	@RequestMapping(value="/admin/delete/{id}", method = RequestMethod.GET)
 	public ModelAndView deleteUser(@PathVariable("id") Long id) {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:/");
+		modelAndView.setViewName("redirect:/admin/users");
 		User user = userService.getById(id);
 		userService.delete(user);
 		return modelAndView;

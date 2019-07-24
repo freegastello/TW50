@@ -1,8 +1,4 @@
 package ru.user.model;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -10,10 +6,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-//@Data
-//@Builder
-//@AllArgsConstructor
-//@NoArgsConstructor
 @Transactional
 @Table(name = "users")
 public class User {
@@ -24,32 +16,36 @@ public class User {
 	private String name;
 	private String login;
 	private String password;
-//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private boolean enabled;
 	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles",
 			joinColumns = @JoinColumn(name="user_id"),
 			inverseJoinColumns = @JoinColumn(name="role_id")
 	)
 	private List<Role> role = new ArrayList<>();
-//All,
-//PERSIST, REFRESH
-//No DETACH, ALL
+
 	public User() {}
 
-	public User(String name, String login, String password, List<Role> role) {
+	public User(String name, String login, String password, List<Role> role, boolean enabled) {
 		this.name = name;
 		this.login = login;
 		this.password = password;
 		this.role = role;
+		this.enabled = enabled;
 	}
 
-	public User(Long id, String name, String login, String password, List<Role> role) {
+	public User(Long id, String name, String login, String password, List<Role> role, boolean enabled) {
 		this.id = id;
 		this.name = name;
 		this.login = login;
 		this.password = password;
 		this.role = role;
+		this.enabled = enabled;
 	}
+
+	public boolean isEnabled() {return enabled;}
+
+	public void setEnabled(boolean enabled) {this.enabled = enabled;}
 
 	public Long getId() {
 		return id;
@@ -96,7 +92,8 @@ public class User {
 		if (this == o) return true;
 		if (!(o instanceof User)) return false;
 		User user = (User) o;
-		return getId() == user.getId() &&
+		return isEnabled() == user.isEnabled() &&
+				Objects.equals(getId(), user.getId()) &&
 				Objects.equals(getName(), user.getName()) &&
 				Objects.equals(getLogin(), user.getLogin()) &&
 				Objects.equals(getPassword(), user.getPassword()) &&
@@ -105,7 +102,7 @@ public class User {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getId(), getName(), getLogin(), getPassword(), getRole());
+		return Objects.hash(getId(), getName(), getLogin(), getPassword(), isEnabled(), getRole());
 	}
 
 	@Override
@@ -115,6 +112,7 @@ public class User {
 				", name='" + name + '\'' +
 				", login='" + login + '\'' +
 				", password='" + password + '\'' +
+				", enabled=" + enabled +
 				", role=" + role +
 				'}';
 	}
